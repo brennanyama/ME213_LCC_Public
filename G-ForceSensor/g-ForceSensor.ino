@@ -44,9 +44,9 @@ void loop() {
   // Calibrate the signal
   // 600 bits ~= 1G
   // 500 bits ~= 0G
-  x = x - 507;
-  y = y - 515;
-  z = z - 508;
+  x = x - 500;
+  y = y - 500;
+  z = z - 500;
   total = sqrt(sq(x)+sq(y)+sq(z));
     
   // print the accerometer values:
