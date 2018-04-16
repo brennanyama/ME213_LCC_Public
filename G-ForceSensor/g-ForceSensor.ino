@@ -1,22 +1,28 @@
 // Created by: Brennan Yamamoto
-// Last update: 2018.04.11
+// Last update: 2018.04.16
 //
-// Arduino tutorial code with an ADXL 335 accelerometer and buzzer
+// Tutorial code for an Arduino UNO with an ADXL335 accelerometer and buzzer
 
 // Pin definitions
-const int groundPin = A4;   // analog input pin 4 -- ground
-const int powerPin = A5;    // analog input pin 5 -- voltage
-const int xPin = A3;        // x-axis of the accelerometer
-const int yPin = A2;        // y-axis
-const int zPin = A1;        // z-axis
-const int buzzerPin = 11;   // buzzer pin
+const int zPin = A1;        // input analog pin A1 to ADXL335 Z (z-axis) pin
+const int yPin = A2;        // input analog pin A2 to ADXL335 Y (y-axis) pin
+const int xPin = A3;        // input analog pin A3 to ADXL335 X (x-axis) pin
+const int groundPin = A4;   // output analog pin A4 to ADXL335 GND (ground) pin
+const int powerPin = A5;    // output analog pin A5 to ADXL335 VCC (voltage) pin
+const int buzzerPin = 11;   // output digital pin 11 to buzzer HIGH pin
+
+// Code variables
+long x = 0;
+long y = 0;
+long z = 0;
+long total = 0;
 
 void setup() {
   
   // Initialize serial communication at 9600 baud
   Serial.begin(9600);
 
-  // Instantiate pins
+  // Instantiate pins (see https://www.arduino.cc/en/Tutorial/DigitalPins)
   pinMode(groundPin, OUTPUT);
   pinMode(powerPin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
@@ -30,11 +36,6 @@ void setup() {
 
 void loop() {
 
-  // Instantiate code variables
-  int x = 0;
-  int y = 0;
-  int z = 0;
-
   // Read accelerometer
   x = analogRead(xPin);
   y = analogRead(yPin);
@@ -43,9 +44,10 @@ void loop() {
   // Calibrate the signal
   // 600 bits ~= 1G
   // 500 bits ~= 0G
-  x = x - 505;
+  x = x - 507;
   y = y - 515;
   z = z - 508;
+  total = sqrt(sq(x)+sq(y)+sq(z));
     
   // print the accerometer values:
   Serial.print("x: ");
@@ -57,17 +59,17 @@ void loop() {
   Serial.print("z: ");
   Serial.print(z);
   Serial.print("\t");
-  Serial.print("absolute value: ");
-  Serial.print(abs(x)+abs(y)+abs(z));
+  Serial.print("sqrt of sum of squares: ");
+  Serial.print(total);
   Serial.println();
 
-  if (abs(x+y+z) >= 250) {
+  if (total >= 250) {
     digitalWrite(buzzerPin, HIGH);
-    delay(100);
+    delay(150);
     digitalWrite(buzzerPin, LOW);
   }
   
   // Short delay
-  delay(50);
+  delay(10);
 
 }
